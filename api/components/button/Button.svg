@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.6.1 (26313) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_button</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ic_button" fill="#25282A">
+            <path d="M4,7.99810135 C4,6.89458045 4.89451376,6 5.99406028,6 L18.0059397,6 C19.1072288,6 20,6.88670635 20,7.99810135 L20,14 L4,14 L4,7.99810135 L4,7.99810135 Z" id="Rectangle-37-Copy"></path>
+            <path d="M2,13 L22,13 L22,18 L2,18 L2,13 Z M3,14 L21,14 L21,17 L3,17 L3,14 Z" id="Combined-Shape"></path>
+        </g>
+    </g>
+</svg>
