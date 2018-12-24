@@ -13,8 +13,7 @@ var config = {
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (err) { throw err; }
-  
-  //add swagger ui
+
   app.use(SwaggerUi(swaggerExpress.runner.swagger));
   app.use(bodyParser.json());
   var shema = promisify(fs.readFile)('./schemaFromFractal.json', "utf-8");
@@ -22,8 +21,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
     client = new kafka.Client(),
     producer = new Producer(client),
     payloads = [
-      { topic: 'codgenTo', messages: shema, partition: 0 },
-      { topic: 'codgenFrom', partition: 0 },
+      { topic: 'codgenFrom', partition: 0 }
     ];
 
   var Consumer = kafka.Consumer,
@@ -41,9 +39,12 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   consumer.on('message', function (message) {
     var req;
     startGeneration(message, req);
-    producer.send([
+    producer.send(
+    [
       { topic: 'codgenTo', messages: [req]}
-    ], function (err, result) {
+    ], 
+    function (err, result) 
+    {
       console.log(err || result);
       process.exit();
     });
