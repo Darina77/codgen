@@ -16,4 +16,9 @@ const readComponentFile = async fileName => {
   return componentContent;
 };
 
-module.exports = {writeFile, readJSON,  readComponentFile};
+const getAllFilesIn = async (path) => {
+  const val = await promisify(fs.readdir)(path);
+  return val;
+};
+
+module.exports = {writeFile, readJSON,  readComponentFile, getAllFilesIn};

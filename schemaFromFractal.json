@@ -3,95 +3,13 @@
     "ver": "0.0.1",
     "elements": [
       {
-        "id": 6565584204532707,
+        "id": 1,
         "name": "Button",
-        "x": 157,
-        "y": 57,
-        "links": [],
         "params": {
           "characteristicButtonPin" : 3,
           "characteristicButtonActiveState" : 0,
           "characteristicButtonContactDebounceTime" : 100
-        },
-        "props": {
-          "Title": {
-            "name": "Title",
-            "hidden": false,
-            "info": "Title",
-            "doWork": false,
-            "type": 1,
-            "value": "my Title ewfwefwf",
-            "values": "",
-            "default": ""
-          },
-          "Top": {
-            "name": "Top",
-            "hidden": false,
-            "info": "Top",
-            "doWork": false,
-            "type": 1,
-            "value": 100,
-            "values": "",
-            "default": ""
-          },
-          "Left": {
-            "name": "Left",
-            "hidden": false,
-            "info": "Left",
-            "doWork": false,
-            "type": 1,
-            "value": 100,
-            "values": "",
-            "default": ""
-          },
-          "Style": {
-            "name": "Style",
-            "hidden": false,
-            "info": "Style",
-            "doWork": false,
-            "type": 10,
-            "value": 1,
-            "values": [
-              "primary",
-              "default"
-            ],
-            "default": 1
-          }
-        },
-        "methods": {
-          "onClick": {
-            "name": "onClick",
-            "hidden": false,
-            "info": "onClick",
-            "type": 2,
-            "path": []
-          },
-          "onMouseEnter": {
-            "name": "onMouseEnter",
-            "hidden": false,
-            "info": "onMouseEnter",
-            "type": 2,
-            "path": []
-          },
-          "onMouseLeave": {
-            "name": "onMouseLeave",
-            "hidden": false,
-            "info": "onMouseLeave",
-            "type": 2,
-            "path": []
-          },
-          "onMouseMove": {
-            "name": "onMouseMove",
-            "hidden": false,
-            "info": "onMouseMove",
-            "type": 2,
-            "path": []
-          }
-        },
-        
-        "typeName": "rect",
-        "class": "",
-        "handler": ""
+        }
       }
     ],
     "id": "10"
