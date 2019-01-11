@@ -55,5 +55,5 @@ consumer.on("message", function(message) {
 });
 
 consumer.on("error", function(err) {
-    console.log("error", err);
+    console.log(" error ", err);
 });
