@@ -21,7 +21,7 @@ const uint16_t 	characteristicButton/*--ID--*/ContactDebounceTime = /*--ContactD
 
 
 //--------funct section-------------
-bool button/*--ID--*/Processing ()
+bool button/*--ID--*/Processing()
 {
 	static bool prevButtonState = !characteristicButton/*--ID--*/ActiveState;
 	bool currentButtonState;
@@ -31,17 +31,17 @@ bool button/*--ID--*/Processing ()
 	currentTimeMs = millis();
 	if ((currentTimeMs - lastStateChangeTimeMs) > characteristicButton/*--ID--*/ContactDebounceTime)
 	{
-		currentButtonState = digitalRead (characteristicButton/*--ID--*/Pin);
+		currentButtonState = digitalRead(characteristicButton/*--ID--*/Pin);
 		if (currentButtonState != prevButtonState)
 		{
 			prevButtonState = currentButtonState;
 			if (currentButtonState == characteristicButton/*--ID--*/ActiveState)
 			{
-				globalEventProcessor (/*--ID--*/, 0);
+				globalEventProcessor(/*--ID--*/, 0);
 			}
 			else
 			{
-				globalEventProcessor (/*--ID--*/, 1);
+				globalEventProcessor(/*--ID--*/, 1);
 			}
 		}
 	}
@@ -50,11 +50,10 @@ bool button/*--ID--*/Processing ()
 
 
 //--------setup section----------
-	pinMode (button/*--ID--*/Pin, INPUT);
+pinMode(button/*--ID--*/Pin, INPUT);
 //--------setup section end------
 
 	
 //--------loop section----------
-button/*--ID--*/Processing ();
+button/*--ID--*/Processing();
 //--------loop section end------
-	
