@@ -1,9 +1,13 @@
 const fs = require("fs");
-const { promisify } = require("util");
+const {
+  promisify
+} = require("util");
 
 const writeFile = async (outFile, data) => {
-  //await promisify(fs.truncate)(outFile, 0);
-  await promisify(fs.writeFile)(outFile, data, {encoding: "utf8", flag: "w"});
+  await promisify(fs.writeFile)(outFile, data, {
+    encoding: "utf8",
+    flag: "w"
+  });
 };
 
 const readJSON = async fileName => {
@@ -16,9 +20,46 @@ const readComponentFile = async fileName => {
   return componentContent;
 };
 
-const getAllFilesIn = async (path) => {
-  const val = await promisify(fs.readdir)(path);
-  return val;
+const getWaysToFilesWithExtension = async (extension, startPath, callback) => 
+{
+  var results = [];
+  return promisify(fs.readdir)(startPath, function (err, list) 
+  {
+      if (err) return callback(err);
+      var i = 0;
+      (function next()
+      {
+        var file = list[i++];
+        if (!file) return callback(null, results);
+        file = startPath + '/' + file;
+        fs.stat(file, async function (err, stat) 
+        {
+          if (stat && stat.isDirectory()) 
+          {
+            getWaysToFilesWithExtension(extension, file, function (err, res) 
+            {
+              results = results.concat(res);
+              next();
+            });
+          } 
+          else 
+          {
+            var fileEx = "." + file.split('.')[2];
+            if (fileEx == extension) 
+            {
+              results.push(file);
+            }
+            next();
+          }
+        });
+      })();
+  });
 };
 
-module.exports = {writeFile, readJSON,  readComponentFile, getAllFilesIn};
+
+module.exports = {
+  writeFile,
+  readJSON,
+  readComponentFile,
+  getWaysToFilesWithExtension
+};

@@ -1,16 +1,9 @@
-//--------include section-----------
-//--------include section end-------
+/* --- GENERATED --- *//* --- GENERATED END ---*/
+
+/* --- GENERATED --- *//* --- GENERATED END ---*/
 
 
-//--------define section-------------
-//--------define section end---------
-
-
-//--------global vars section-------------
-//--------global vars section end---------
-
-//--------characteristics table section-------------
-//--------characteristics table section end---------
+/* --- GENERATED --- *//* --- GENERATED END ---*/
 
 typedef void (*MyFuncPtrType)(int*, char*);
 MyFuncPtrType my_func_ptr;
@@ -53,26 +46,25 @@ struct packetBetweenElements
 	void * msgPayload;					//Указатель на данные
 };
 
-//----------------funct section-------------
-//----------------funct section end---------
+/* --- GENERATED --- *//* --- GENERATED END ---*/
 
 void setup ()
 {
-//--------------setup section----------
-//--------------setup section end------
+/* --- GENERATED --- *//* --- GENERATED END ---*/
 }
 
 void loop ()
 {
-//--------------loop section----------
-//--------------loop section end------
+/* --- GENERATED --- *//* --- GENERATED END ---*/
 }
 
 int main ()
 {
-	setup ();
+    UNITY_BEGIN();
+    setup ();
 	while (true)
 	{
 		loop ();
 	}
+    UNITY_END();
 }

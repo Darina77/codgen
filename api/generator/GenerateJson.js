@@ -5,12 +5,12 @@ class GenerateJson {
     constructor({componentsPath, extension, scpecificPath} = {}) {
         this.componentsPath = componentsPath || "src/components/";
         this.componentsExtension = extension || ".cpp";
-        this.avoidedElements = ["main"];
+        this.avoidedComponents = ["main"];
         this.specificPath = scpecificPath || null;
         this.specialChars = ['=', '(']
     }
 
-    async getFileFromDir(dirPath)
+    async findComponentSourceCode(dirPath)
     {
         var files = await getAllIn(dirPath);
         for(var i = 0; i < files.length; i++){
@@ -19,29 +19,36 @@ class GenerateJson {
             if (stat.isFile()){
                 var val = "." + files[i].split('.')[1];
                 var name = files[i].split('.')[0];
-                if (this.avoidedElements.includes(name.toLowerCase())) return;
+                if (this.avoidedComponents.includes(name.toLowerCase())) return;
                 if(val == this.componentsExtension)
                 {
-                    var componentCode = await readComponentFile(filePath);
-                    if (componentCode) 
-                    {
-                        const resFilePath = dirPath + "/" + name + ".json";
-                        const resJson = this.generateComponentJSON(componentCode, name);
-                        await writeFile(resFilePath, resJson);
-                    }
-                    return;
+                    return filePath;
                 }
             }
         };
     }
 
-    async generate() {
+    async writeComponentJSON(souceCodePath)
+    {
+        var componentCode = await readComponentFile(souceCodePath);
+        if (componentCode) 
+        {
+            const resFilePath = dirPath + "/" + name + ".json";
+            const resJson = this.generateComponentJSON(componentCode, name);
+            await writeFile(resFilePath, resJson);
+            return true;
+        }
+        return false;
+    }
+
+    async generateAllComponentsJSON() {
 
         var foulders = await getAllIn(this.componentsPath);
 
         if (this.specificPath != null)
         {
-            this.getFileFromDir(this.componentsPath+this.specificPath);
+            const souceCodePath = await this.findComponentSourceCode(this.componentsPath+this.specificPath);
+            writeComponentJSON(souceCodePath);
             
         } 
         //if one specific path for one component did't declare
@@ -49,17 +56,17 @@ class GenerateJson {
         else 
         {
             for(var i = 0; i < foulders.length; i++){
-                var filename = this.componentsPath + foulders[i];
-                var stat = fs.lstatSync(filename);
+                var dirPath = this.componentsPath + foulders[i];
+                var stat = fs.lstatSync(dirPath);
                 if (stat.isDirectory()){
-                    this.getFileFromDir(filename);
+                    this.findComponentSourceCode(dirPath);
                 }
             }
         }
     }
 
 
-    generateComponentJSON(componentCode, name)
+    generateOneComponentJSON(componentCode, name)
     {
         var sections = {
             "characteristics table section" : [],
@@ -73,7 +80,7 @@ class GenerateJson {
         return this.makeJson(name, sections);
     }
     
-    makeJson(name, sections)
+    makeJSON(name, sections)
     {
         var text = `{ "name" : "${name}"`;
      

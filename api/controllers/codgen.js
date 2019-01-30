@@ -1,96 +1,170 @@
-const { writeFile, readComponentFile} = require("../helpers/utils");
+const {
+    writeFile,
+    readComponentFile
+} = require("../helpers/utils");
+
+const {
+    RegExpGenerator
+} = require("../controllers/regExpGenerator");
+
+const {
+    OneComponent
+} = require("../controllers/oneComponent");
 
 class Codegen {
-    constructor({extension, componentsPath, out, codgenCommStart, codgenCommEnd, mainComponent} = {}) {
-        this.componentsPath = componentsPath || "src/components/";
-        this.componentsExtension = extension || ".cpp";
-        this.sections = {
-            "include section" : [],
-            "define section" : [],
-            "global vars section" : [],
-            "funct section" : [],
-            "setup section" : [],
-            "loop section" : []
-        };
-        this.out = out || "out/main";
-        this.codgenCommStart = codgenCommStart || "//this code add by codgen";
-        this.codgenCommEnd = codgenCommEnd || "//end";
-        this.mainComponent = mainComponent || "main/main";
+    constructor({
+        extensions,
+        oneLineComment,
+        manyLineCommentStart,
+        manyLineCommentEnd,
+        componentsPath,
+        outPath
+    } = {}) {
+        this.componentsPath = componentsPath || "api/components"; //Путь к библиотеке компонетов
+        //this.componentsExtensions = extensions || [".cpp"]; //Разширения исходного кода компонента
+        this.regExpGenerator = new RegExpGenerator({ //Создает регулярные выражения
+            oneLineComment, //обозначения начала однострочного коментария                        
+            manyLineCommentStart, //обозначение начала многострочного коментария
+            manyLineCommentEnd //обозначение конца многострочного коментария
+        });
+        this.components = [];
+        this.resultComponents = [];
+        this.resultCompSection = "result component";
+        this.outPath = outPath || "api/out"; //Путь к результатy кодогенерaци
     }
 
+    //Для начала генерации нужно вызвать этот метод
+    //shema - это json который получили от клиента 
     async generateFrom(schema) {
-        var mainCode = await readComponentFile(`${this.componentsPath}${this.mainComponent}${this.componentsExtension}`);  
-        for (var i = 0; i < schema.elements.length; i++)
-        {
-            var el = schema.elements[i];
-            var componentCode = await readComponentFile(`${this.componentsPath}${el.name.toLowerCase()}/${el.name.toLowerCase()}${this.componentsExtension}`);
-            this.generateComponent(el, componentCode);   
+        for (var extension of this.componentsExtensions) {
+            //Для каждого компонента в схеме
+            for (var component of schema.components) {
+
+                var oneComponentName = component.name.toLowerCase();
+                try {
+                    //Находим код компонента
+                    var componentCode = await readComponentFile(this.componentsPath + '/' + oneComponentName +
+                        '/' + oneComponentName + extension);
+
+                    var id = component.id;
+                    var params = component.params;
+                    var defaultResComponents = this.findResComponents(componentCode);
+
+                    componentCode = this.replaceId(id, componentCode);
+                    componentCode = this.replaceParams(params, componentCode);
+
+                    var oneComponent = new OneComponent({
+                        id,
+                        code: componentCode,
+                        defaultResComponents
+                    });
+                    for (var section in oneComponent.sections) {
+                        var sectionCode = this.getSpecificSection(section, oneComponent.code, false);
+                        var resComponents = this.findResComponents(sectionCode);
+                        oneComponent.putInSection(section, sectionCode, resComponents);
+                    }
+                    this.components.push(oneComponent);
+
+                } catch (e) {
+                    //console.log("No such component source code");
+                    //console.log(e);
+                    throw e;
+                }
+            }
+
+            for (var oneResultComponent of this.resultComponents) {
+
+                var mainCode = await readComponentFile(this.componentsPath + '/' + oneResultComponent + '/' +
+                    oneResultComponent + extension);
+
+                const resultCode = this.writeComponentsTo(oneResultComponent, mainCode);
+                //Записываем полученый код конечного компонента в файл
+                const resultCodeWay = `${this.outPath}/${oneResultComponent}${extension}`;
+                await writeFile(resultCodeWay, resultCode);
+                console.log("Codegeneration completed! See your result  - " + resultCodeWay);
+            }
         }
-        const resultCode = this.writeAll(mainCode);
-        await writeFile(`${this.out}${this.componentsExtension}`, resultCode);
-        return resultCode;
     }
 
-    writeAll(mainCode)
-    {
-        for(var section in this.sections)
-        {
-            mainCode = this.writeSpecificSection(section, this.sections[section], mainCode);
+    //Записывает код всех секций в один общий компонент
+    writeComponentsTo(resultComponentName, mainCode) {
+        for (var oneComponent of this.components) {
+            for (var section in oneComponent.sections) {
+                var sectionData = oneComponent.sections[section];
+                if (sectionData.resFiles.length > 0) {
+                    if (sectionData.resFiles.includes(resultComponentName)) {
+                        mainCode = this.writeSpecificSection(section, sectionData.codeInOneSection, mainCode);
+                    }
+                } else {
+                    if(oneComponent.defaultResComponents.includes(resultComponentName))
+                    {
+                        mainCode = this.writeSpecificSection(section, sectionData.codeInOneSection, mainCode);
+                    }
+                }
+            }
         }
         return mainCode;
     }
 
-    generateComponent({id, params}, componentCode)
-    {
-        //replace all id-comment
-        var idRegEx = new RegExp(`(.{2}-*ID-*.{2})`, 'g');
+    //Записывает код определенной секции в соответсвующую секцию компонента
+    writeSpecificSection(sectionStartComment, newSectionCode, mainCode) {
+        if (newSectionCode) {
+            var regEx = this.regExpGenerator.getSectionRexExp(sectionStartComment, false);
+            mainCode = mainCode.replace(regEx, '$1' + '$2' + newSectionCode + '$3'); // Заменяет отмеченую секцию кодом 
+        }
+        return mainCode;
+    }
+
+    findResComponents(code) {
+        var resComponents = this.regExpGenerator.clearLinesFromSpaces( //Очищаем от лишних пробелов
+            this.regExpGenerator.getLinesWithoutComment( //Результирующие компненты очищаем от строк коментария
+                this.getSpecificSection(this.resultCompSection, code, false) //Ищем секцию с указаными результирующими компонентами
+            )
+        );
+        //Найдя что-то добавляем в общий масив результирующих компонентов
+        for (var oneComponent of resComponents) {
+            if (!this.resultComponents.includes(oneComponent)) {
+                this.resultComponents.push(oneComponent);
+            }
+        }
+        return resComponents;
+    }
+
+    //id - уникальный индификтор компонента
+    //componentCode - исходный код компонента
+    //Находит и заменяет все коментарии по типу /*--ID--*/ и заменяет их 
+    replaceId(id, componentCode) {
+        var idRegEx = this.regExpGenerator.getAllValueRegExp();
         componentCode = componentCode.replace(idRegEx, id);
-        //replace all characteristics
-        for (let characteristicName in params) {
-            var charactRegEx = new RegExp(`(.{2}-*{characteristicName}-*.{2})`);
-            componentCode = componentCode.replace(charactRegEx, 
-                                                `${params[characteristicName].value}`);
-        }
-        //get all sections of element
-        for(var section in this.sections)
-        {
-            this.getSpecificSection(section, this.sections[section], componentCode);
-        }
+        return componentCode;
     }
 
-    writeSpecificSection(sectionStartComment, newSectionCode, mainCode)
-    {
-        if(newSectionCode)
-        {
-            var newCode = this.codgenCommStart + newSectionCode.join() + this.codgenCommEnd;
-            var regEx = new RegExp(`(.*-*${sectionStartComment}-*\\s)([\\s\\S]*?)(.*-*${sectionStartComment} end-*)`);
-            mainCode = mainCode.replace(regEx, newCode);
+    //Находит и заменяет все значения характеристик с соответвующим названияем в коментарии к коду
+    replaceParams(params, componentCode) {
+        for (let paramName in params) {
+            var charactRegEx = this.regExpGenerator.getParamRegExp(paramName);
+            componentCode = componentCode.replace(charactRegEx,
+                `${params[paramName]}`);
         }
-        return mainCode;
+        return componentCode;
     }
 
-    getSpecificSection(sectionName, sectionArray, componentCode)
-    {
-        var regEx = new RegExp(`(.{2}-*${sectionName}-*\\s)([\\s\\S]*?)(.{2}-*${sectionName} end-*)`);
-        var res = componentCode.match(regEx);
-        if(res)
-        {
-            sectionArray.push(res[2]);
-        }
+    //Находит код указанной секции 
+    //sectionName - название секции
+    //componentCode - код компонента в котором нужно искать
+    getSpecificSection(sectionName, componentCode, manyLineMode) {
+        if (componentCode) {
+            var regEx = this.regExpGenerator.getSectionRexExp(sectionName, manyLineMode)
+            var res = componentCode.match(regEx); //Ищет код секции по регулярному выражению
+            if (res) {
+                return res[2];
+            } else return "";
+        } else throw new Error("No component code");
     }
+
+
 }
 
-function startGeneration(req, res) {   
-    const codegen = new Codegen({
-        extension: ".cpp", 
-        componentsPath: "api/components/",
-        out: "api/out/main"
-    });  
-    const code = codegen.generateFrom(req.body);
-    code.then(function(result){
-        console.log(result);
-        res.json(result);
-    });
-}
-
-module.exports = { startGeneration };
+module.exports = {
+    Codegen
+};

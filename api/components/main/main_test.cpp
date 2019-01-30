@@ -1,16 +1,15 @@
 //--------include section-----------
+
 //--------include section end-------
 
-
 //--------define section-------------
+
 //--------define section end---------
 
 
 //--------global vars section-------------
-//--------global vars section end---------
 
-//--------characteristics table section-------------
-//--------characteristics table section end---------
+//--------global vars section end---------
 
 typedef void (*MyFuncPtrType)(int*, char*);
 MyFuncPtrType my_func_ptr;
@@ -54,25 +53,30 @@ struct packetBetweenElements
 };
 
 //----------------funct section-------------
+
 //----------------funct section end---------
 
 void setup ()
 {
-//--------------setup section----------
-//--------------setup section end------
+	//--------------setup section----------
+	
+	//--------------setup section end------
 }
 
 void loop ()
 {
-//--------------loop section----------
-//--------------loop section end------
+	//--------------loop section----------
+	
+	//--------------loop section end------
 }
 
 int main ()
 {
-	setup ();
+    UNITY_BEGIN();
+    setup ();
 	while (true)
 	{
 		loop ();
 	}
+    UNITY_END();
 }

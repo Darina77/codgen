@@ -1,16 +1,22 @@
-//this code add by codgen
-
-//end
-
-
-//this code add by codgen
-
-//end
+//--------include section-----------
+#include <iostream>
+//--------include section end-------
 
 
-//this code add by codgen
+//--------define section-------------
+#define Smth 
+//--------define section end---------
 
-//end
+
+//--------global vars section-------------
+const uint16_t	globalButton1Val = 10; 
+//--------global vars section end---------
+
+//--------characteristics table section-------------
+const uint16_t	characteristicButton1Pin = 3; //1
+const bool 		characteristicButton1ActiveState = 0; //2
+const uint16_t 	characteristicButton1ContactDebounceTime = 100; //3
+//--------characteristics table section end---------
 
 typedef void (*MyFuncPtrType)(int*, char*);
 MyFuncPtrType my_func_ptr;
@@ -53,46 +59,50 @@ struct packetBetweenElements
 	void * msgPayload;					//Указатель на данные
 };
 
-//this code add by codgen
-bool button6565584204532707Processing ()
+//----------------funct section-------------
+//---result component---
+//led
+//main
+//---result component end---
+bool button1Processing()
 {
-	static bool prevButtonState = !characteristicButton6565584204532707ActiveState;
+	static bool prevButtonState = !characteristicButton1ActiveState;
 	bool currentButtonState;
 	static uint32_t lastStateChangeTimeMs = 0;
 	uint32_t currentTimeMs;
 	
 	currentTimeMs = millis();
-	if ((currentTimeMs - lastStateChangeTimeMs) > characteristicButton6565584204532707ContactDebounceTime)
+	if ((currentTimeMs - lastStateChangeTimeMs) > characteristicButton1ContactDebounceTime)
 	{
-		currentButtonState = digitalRead (characteristicButton6565584204532707Pin);
+		currentButtonState = digitalRead(characteristicButton1Pin);
 		if (currentButtonState != prevButtonState)
 		{
 			prevButtonState = currentButtonState;
-			if (currentButtonState == characteristicButton6565584204532707ActiveState)
+			if (currentButtonState == characteristicButton1ActiveState)
 			{
-				globalEventProcessor (6565584204532707, 0);
+				globalEventProcessor(1, 0);
 			}
 			else
 			{
-				globalEventProcessor (6565584204532707, 1);
+				globalEventProcessor(1, 1);
 			}
 		}
 	}
 }
-//end
+//----------------funct section end---------
 
 void setup ()
 {
-//this code add by codgen
-	pinMode (button6565584204532707Pin, INPUT);
-//end
+//--------------setup section----------
+pinMode(button1Pin, INPUT);
+//--------------setup section end------
 }
 
 void loop ()
 {
-//this code add by codgen
-button6565584204532707Processing ();
-//end
+//--------------loop section----------
+button1Processing();
+//--------------loop section end------
 }
 
 int main ()

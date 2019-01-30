@@ -1,10 +1,6 @@
 {
     "Make": "web",
     "ver": "0.0.1",
-    "components": [
-      {
-        
-      }
-    ],
+    "components": [],
     "id": "10"
   }

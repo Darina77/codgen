@@ -1,14 +1,15 @@
 {
     "Make": "web",
     "ver": "0.0.1",
-    "elements": [
+    "components": [
       {
         "id": 1,
         "name": "Button",
         "params": {
-          "characteristicButtonPin" : 3,
-          "characteristicButtonActiveState" : 0,
-          "characteristicButtonContactDebounceTime" : 100
+          "Pin" : 3,
+          "ActiveState" : 0,
+          "ContactDebounceTime" : 100,
+          "Val" : 10
         }
       }
     ],

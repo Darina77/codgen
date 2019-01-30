@@ -1,16 +1,15 @@
-//--------include section-----------
+/* --- GENERATED --- */
 
-//--------include section end-------
+/* --- GENERATED END ---*/
 
-#ifdef UNIT_TEST
-//--------define section-------------
+/* --- GENERATED --- */
 
-//--------define section end---------
+/* --- GENERATED END ---*/
 
 
-//--------global vars section-------------
+/* --- GENERATED --- */
 
-//--------global vars section end---------
+/* --- GENERATED END ---*/
 
 typedef void (*MyFuncPtrType)(int*, char*);
 MyFuncPtrType my_func_ptr;
@@ -53,22 +52,32 @@ struct packetBetweenElements
 	void * msgPayload;					//Указатель на данные
 };
 
-//----------------funct section-------------
+/* --- GENERATED --- */
+void test_button(void) {
 
-//----------------funct section end---------
+    button/*--ID--*/Processing();
+    TEST_ASSERT_EQUAL(0, 0);
+}
+
+void button/*--ID--*/TestProcessing() 
+{ 
+    RUN_TEST(test_button); 
+    delay(200);
+}
+/* --- GENERATED END ---*/
 
 void setup ()
 {
-	//--------------setup section----------
-	
-	//--------------setup section end------
+/* --- GENERATED --- */
+TEST_ASSERT_EQUAL(0, 0);
+/* --- GENERATED END ---*/
 }
 
 void loop ()
 {
-	//--------------loop section----------
-	
-	//--------------loop section end------
+/* --- GENERATED --- */
+void button/*--ID--*/TestProcessing();
+/* --- GENERATED END ---*/
 }
 
 int main ()
@@ -81,4 +90,3 @@ int main ()
 	}
     UNITY_END();
 }
-#endif
