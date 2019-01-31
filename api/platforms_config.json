@@ -1,0 +1,27 @@
+{
+        "web" : 
+        [
+            {
+                "extension": ".js",
+                "regExpGenerator": {
+                    "oneLineComment": "//",
+                    "manyLineCommentStart": "/*",
+                    "manyLineCommentEnd": "*/"
+                }
+            },
+            {
+                "extension": ".html",
+                "regExpGenerator": {
+                    "manyLineCommentStart": "<!-",
+                    "manyLineCommentEnd": "-->"
+                }
+            },
+            {
+                "extension": ".css",
+                "regExpGenerator": {
+                    "manyLineCommentStart": "/*",
+                    "manyLineCommentEnd": "*/"
+                }
+            }
+        ]
+}

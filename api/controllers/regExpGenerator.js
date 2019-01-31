@@ -1,9 +1,14 @@
 class RegExpGenerator {
     constructor({
+        //Однострочный коментарий
         oneLineComment,
+        //Начало многострочного коментария
         manyLineCommentStart,
+        //Конец многострочного коментария
         manyLineCommentEnd
     } = {}) {
+        //Особенные символы которые используются в регулярных воражениях
+        //Нужны чтобы в formCommentString методе отделить эти символы если они используются для коментирования
         this.specialChars = ['*', '+', '?', '^', '$'];
         this.oneLineComment = this.formCommentString(oneLineComment) || String.raw `//`;
         this.manyLineCommentStart = this.formCommentString(manyLineCommentStart) || String.raw `/\*`;
@@ -33,13 +38,14 @@ class RegExpGenerator {
     //Ищет текст в указанной секции
     //sectionName - название секции
     //manyLineMode - указание на использование многострочного коментария в приоритете над однострочным
-    getSectionRexExp(sectionName, manyLineMode = true) {
+    getSectionRexExp(sectionName, manyLineMode = false) {
         return this.generateOne(new RegExp(`(${this.manyLineCommentStart}-*${sectionName}-*${this.manyLineCommentEnd})([\\s\\S]*?)(${this.manyLineCommentStart}-*${sectionName} end-*${this.manyLineCommentEnd})`),
             new RegExp(`(${this.oneLineComment}-*${sectionName}-*\\s*)([\\S\\s]*?)(${this.oneLineComment}-*${sectionName} end-*)`),
             manyLineMode);
     }
 
-
+    //Возращает текст без коментариев
+    //lines - текст
     getLinesWithoutComment(lines) {
         var inRes = lines;
         if (lines) {
@@ -50,6 +56,8 @@ class RegExpGenerator {
         } else return [];
     }
 
+    //Очищает текст от пробельных символов
+    //lines - текст
     clearLinesFromSpaces(lines) {
         var newLines = [];
         for (var oneNew of lines) {
@@ -91,6 +99,10 @@ class RegExpGenerator {
         return resEx;
     }
 
+    //Проверяет символы которые устанавлюются для обозначения коментария в коде
+    //Если символ относится к особенным (тем которые используются в регулярных выражениях)
+    //То он отделяется \ чтобы в регулярном выржении символ воспринимался как текст
+    //comment - обозначение коментария
     formCommentString(comment) {
         if (!comment) return;
         var newComment = "";
