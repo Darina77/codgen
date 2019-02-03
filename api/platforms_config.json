@@ -2,9 +2,9 @@
         "web" : 
         [
             {
-                "extension": ".js",
+                "extension": ".css",
                 "regExpGenerator": {
-                    "oneLineComment": "//",
+                    "oneLineComment": "",
                     "manyLineCommentStart": "/*",
                     "manyLineCommentEnd": "*/"
                 }
@@ -12,13 +12,15 @@
             {
                 "extension": ".html",
                 "regExpGenerator": {
-                    "manyLineCommentStart": "<!-",
+                    "oneLineComment": "",
+                    "manyLineCommentStart": "<!--",
                     "manyLineCommentEnd": "-->"
                 }
             },
             {
-                "extension": ".css",
+                "extension": ".js",
                 "regExpGenerator": {
+                    "oneLineComment": "//",
                     "manyLineCommentStart": "/*",
                     "manyLineCommentEnd": "*/"
                 }

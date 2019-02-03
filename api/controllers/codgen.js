@@ -25,18 +25,21 @@ class Codegen {
         //путь к результату генерации
         outPath
     } = {}) {
-        this.languagesSpecials = languagesSpecials || 
-            [{extension:  ".cpp", 
-            regExpGenerator: 
-                new RegExpGenerator({oneLineComment:"//", manyLineCommentStart:"/*", manyLineCommentEnd:"*/"})
-            }];
-        this.componentsPath = componentsPath || "api/components/arduino"; 
-        this.soursesFoulder = soursesFoulder || "src"; 
+        this.languagesSpecials = languagesSpecials || [{
+            extension: ".cpp",
+            regExpGenerator: new RegExpGenerator({
+                oneLineComment: "//",
+                manyLineCommentStart: "/*",
+                manyLineCommentEnd: "*/"
+            })
+        }];
+        this.componentsPath = componentsPath || "api/components/arduino";
+        this.soursesFoulder = soursesFoulder || "src";
         this.outPath = outPath || "api/out";
 
         this.components = [];
         this.resultComponents = [];
-        this.resultCompSection = "result component"; 
+        this.resultCompSection = "result component";
     }
 
     //Для начала генерации нужно вызвать этот метод
@@ -44,6 +47,8 @@ class Codegen {
     async generateFrom(schema) {
         //Для каждого набора особеностей
         for (var specials of this.languagesSpecials) {
+            this.components = [];
+            this.resultComponents = [];
             //Для каждого компонента в схеме
             for (var component of schema.components) {
                 //Берем имя компонента
@@ -51,7 +56,7 @@ class Codegen {
                 try {
                     //Находим код компонента
                     var componentCode = await readComponentFile(this.componentsPath + '/' + oneComponentName +
-                        '/'+ this.soursesFoulder + '/'+ oneComponentName + specials.extension);
+                        '/' + this.soursesFoulder + '/' + oneComponentName + specials.extension);
                     //Берем id компонента
                     var id = component.id;
                     //Берем характеристики компонента
@@ -84,6 +89,7 @@ class Codegen {
 
                 } catch (e) {
                     console.log("No such component source code");
+                    throw(e);
                 }
             }
 
@@ -91,7 +97,7 @@ class Codegen {
             //Для каждого результирующего компонента    
             for (var oneResultComponent of this.resultComponents) {
                 //Ищем его исхоный код
-                var mainCode = await readComponentFile(this.componentsPath + '/' + oneResultComponent + '/' + this.soursesFoulder + '/'+ oneResultComponent + specials.extension);
+                var mainCode = await readComponentFile(this.componentsPath + '/' + oneResultComponent + '/' + this.soursesFoulder + '/' + oneResultComponent + specials.extension);
                 //Дополняем исходный код код компонентов которые должны дописыватся в это файл
                 const resultCode = this.writeComponentsTo(oneResultComponent, mainCode, specials.regExpGenerator);
                 //Записываем полученый код конечного компонента в файл
@@ -116,8 +122,7 @@ class Codegen {
                         mainCode = this.writeSpecificSection(section, sectionData.codeInOneSection, mainCode, regExpGenerator);
                     }
                 } else {
-                    if(oneComponent.defaultResComponents.includes(resultComponentName))
-                    {
+                    if (oneComponent.defaultResComponents.includes(resultComponentName)) {
                         mainCode = this.writeSpecificSection(section, sectionData.codeInOneSection, mainCode, regExpGenerator);
                     }
                 }
@@ -183,7 +188,7 @@ class Codegen {
     //sectionName - название секции
     //componentCode - код компонента в котором нужно искать
     getSpecificSection(sectionName, componentCode, regExpGenerator) {
-        if (componentCode) {
+        if (componentCode != undefined) {
             var regEx = regExpGenerator.getSectionRexExp(sectionName)
             var res = componentCode.match(regEx); //Ищет код секции по регулярному выражению
             if (res) {

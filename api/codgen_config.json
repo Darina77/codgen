@@ -1,15 +1,8 @@
 {
-    "languagesSpecials": [{
-        "extension": ".cpp",
-        "regExpGenerator": {
-            "oneLineComment": "//",
-            "manyLineCommentStart": "/*",
-            "manyLineCommentEnd": "*/"
-        }
-    }],
-    "componentsPath": "api/components/arduino",
+    "languagesSpecials": [],
+    "componentsPath": "api/components/",
     "soursesFoulder": "src",
-    "outPath": "api/out",
+    "outPath": "api/out/",
 
     "components": [],
     "resultComponents": [],

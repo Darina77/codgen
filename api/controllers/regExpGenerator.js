@@ -10,9 +10,9 @@ class RegExpGenerator {
         //Особенные символы которые используются в регулярных воражениях
         //Нужны чтобы в formCommentString методе отделить эти символы если они используются для коментирования
         this.specialChars = ['*', '+', '?', '^', '$'];
-        this.oneLineComment = this.formCommentString(oneLineComment) || String.raw `//`;
-        this.manyLineCommentStart = this.formCommentString(manyLineCommentStart) || String.raw `/\*`;
-        this.manyLineCommentEnd = this.formCommentString(manyLineCommentEnd) || String.raw `\*/`;
+        this.oneLineComment = this.formCommentString(oneLineComment);
+        this.manyLineCommentStart = this.formCommentString(manyLineCommentStart);
+        this.manyLineCommentEnd = this.formCommentString(manyLineCommentEnd);
     }
 
     //Создает регулярное выражение которое ищет все вхождения value

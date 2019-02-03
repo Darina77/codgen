@@ -5,8 +5,7 @@ const {
 
 const writeFile = async (outFile, data) => {
   await promisify(fs.writeFile)(outFile, data, {
-    encoding: "utf8",
-    flag: "w"
+    encoding: "utf8"
   });
 };
 

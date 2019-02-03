@@ -1,7 +1,3 @@
-//---result component---
-//index
-//---result component end---
-
 //--funct section----
 document.getElementById("demo").onclick = function() {myFunction()};
 
