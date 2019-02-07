@@ -44,6 +44,15 @@ class RegExpGenerator {
             manyLineMode);
     }
 
+    //Ищет секции
+    findAllSections(sectionDef = "section", manyLineMode = false)
+    {
+        return this.generateOne(new RegExp(`(${this.manyLineCommentStart}-*([\\w\\s]+)${sectionDef}-*${this.manyLineCommentEnd})([\\s\\S]*?)(${this.manyLineCommentStart}-*([\\w\\s]+)${sectionDef} end-*${this.manyLineCommentEnd})`, 'g'),
+            new RegExp(`(${this.oneLineComment}-*([\\w\\s]+)${sectionDef}-*\\s*)([\\S\\s]*?)(${this.oneLineComment}-*([\\w\\s]+)${sectionDef} end-*)`, 'g'),
+            manyLineMode);
+    }
+
+
     //Возращает текст без коментариев
     //lines - текст
     getLinesWithoutComment(lines) {
@@ -95,7 +104,7 @@ class RegExpGenerator {
             }
 
         }
-        // console.log("Genereted exp - " + resEx);
+        console.log("Genereted exp - " + resEx);
         return resEx;
     }
 

@@ -40,6 +40,7 @@ class Codegen {
         this.components = [];
         this.resultComponents = [];
         this.resultCompSection = "result component";
+        this.sectionDefine = "section";
     }
 
     //Для начала генерации нужно вызвать этот метод
@@ -68,6 +69,8 @@ class Codegen {
                     componentCode = this.replaceId(id, componentCode, specials.regExpGenerator);
                     //Заменяем характерстика в исходном коде компонента
                     componentCode = this.replaceParams(params, componentCode, specials.regExpGenerator);
+                    
+                    var allSections = this.getSectionsNamesAndValues(componentCode, specials.regExpGenerator);
 
                     //Создаем обьект для одного компонента
                     var oneComponent = new OneComponent({
@@ -76,19 +79,17 @@ class Codegen {
                         defaultResComponents
                     });
                     //Разбиваем код компонента по секциям
-                    for (var section in oneComponent.sections) {
-                        //Ищем код этой секции
-                        var sectionCode = this.getSpecificSection(section, oneComponent.code, specials.regExpGenerator);
+                    for (var section of allSections) {
                         //Ищем особые результирующие компонеты для этой секции
-                        var resComponents = this.findResComponents(sectionCode, specials.regExpGenerator);
+                        var resComponents = this.findResComponents(section.code, specials.regExpGenerator);
                         //Сохраняем в компоненте код и набор компонентов результата для соотвецтвующей секции
-                        oneComponent.putInSection(section, sectionCode, resComponents);
+                        oneComponent.addSection(section.name, section.code, resComponents);
                     }
                     //Сохраняем компонент в кодгене
                     this.components.push(oneComponent);
 
                 } catch (e) {
-                    console.log("No such component source code");
+                    //console.log("No such component source code");
                     throw(e);
                 }
             }
@@ -115,15 +116,14 @@ class Codegen {
     //Возвращает дополненый код результирующего компонента
     writeComponentsTo(resultComponentName, mainCode, regExpGenerator) {
         for (var oneComponent of this.components) {
-            for (var section in oneComponent.sections) {
-                var sectionData = oneComponent.sections[section];
-                if (sectionData.resFiles.length > 0) {
-                    if (sectionData.resFiles.includes(resultComponentName)) {
-                        mainCode = this.writeSpecificSection(section, sectionData.codeInOneSection, mainCode, regExpGenerator);
+            for (var section of oneComponent.sections) {
+                if (section.resFiles.length > 0) {
+                    if (section.resFiles.includes(resultComponentName)) {
+                        mainCode = this.writeSpecificSection(section.name, section.code, mainCode, regExpGenerator);
                     }
                 } else {
                     if (oneComponent.defaultResComponents.includes(resultComponentName)) {
-                        mainCode = this.writeSpecificSection(section, sectionData.codeInOneSection, mainCode, regExpGenerator);
+                        mainCode = this.writeSpecificSection(section.name, section.code, mainCode, regExpGenerator);
                     }
                 }
             }
@@ -139,7 +139,7 @@ class Codegen {
     //Возвращает дополненый код результирующего компонента
     writeSpecificSection(sectionName, newSectionCode, mainCode, regExpGenerator) {
         if (newSectionCode) {
-            var regEx = regExpGenerator.getSectionRexExp(sectionName);
+            var regEx = regExpGenerator.getSectionRexExp(sectionName + this.sectionDefine);
             mainCode = mainCode.replace(regEx, '$1' + '$2' + newSectionCode + '$3'); // Заменяет отмеченую секцию кодом 
         }
         return mainCode;
@@ -197,6 +197,18 @@ class Codegen {
         } else throw new Error("No component code");
     }
 
+    getSectionsNamesAndValues(componentCode, regExpGenerator)
+    {   
+        if (componentCode != undefined) {
+            var oneRes;
+            var res = [];
+            var regEx = regExpGenerator.findAllSections(this.sectionDefine);
+            while ((oneRes = regEx.exec(componentCode)) !== null) {
+                res.push({name: oneRes[2], code: oneRes[3]});
+            }
+            return res;
+        } else throw new Error("No component code");
+    }
 
 }
 

@@ -1,7 +1,22 @@
-/*------funct section------*/
+/*---result component---*/
+/*index*/
+/*---result component end---*/
+
+/*------button style section------*/
+
 
 ​.button {
-    text-align: center;
-    color: red;
-  }
-/*------funct section end------*/
+  text-align: center;
+  color: red;
+}
+/*------button style section end------*/
+  
+/*------button2 section------*/
+
+
+​.button2 {
+text-align: center;
+color: blue;
+}
+/*------button2 section end------*/
+  
