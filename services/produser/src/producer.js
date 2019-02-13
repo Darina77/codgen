@@ -1,69 +1,57 @@
-'use strict';
+const _ = require('underscore');
+const bodyParser = require('body-parser');
+const express = require('express');
+const Router = require('express-promise-router');
+const kafka = require('kafka-node');
 
-var kafka = require('kafka-node');
-var app = require('express')();
-var bodyParser = require('body-parser');
-
-const fs = require("fs");
-const { promisify } = require("util");
-const produserClient = new kafka.Client();
-const consumerClient = new kafka.Client();
-const topics = [
-  {
-      topic: "codgenRes"
-  }   
-];
-
-const options = {
-  autoCommit: true,
-  fetchMaxWaitMs: 1000,
-  fetchMaxBytes: 1024 * 1024,
-  encoding: "buffer"
+const kafkaClientOptions = {
+  sessionTimeout: 100,
+  spinDelay: 100,
+  retries: 2
 };
+const kafkaClient = new kafka.Client(process.env.KAFKA_ZOOKEEPER_CONNECT, 'producer-client', kafkaClientOptions);
+const kafkaProducer = new kafka.HighLevelProducer(kafkaClient);
 
-app.use(bodyParser.json());
-const producer = new kafka.HighLevelProducer(produserClient);
-const consumer = new kafka.HighLevelConsumer(consumerClient, topics, options);
+kafkaClient.on('error', (error) => console.error('Kafka client error:', error));
+kafkaProducer.on('error', (error) => console.error('Kafka producer error:', error));
 
-var port = process.env.PORT || 5068;
+const app = express();
+const router = new Router();
 
-app.listen(port, function(){
-  console.log('Kafka producer running at 5068');
-});
+app.use('/', router);
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({
+  extended: true
+}));
 
-producer.on("error", function(error) {
-  console.error(error);
-});
+router.post('/codgen', (req, res) => {
 
-producer.on("ready", function(){
-  const event = promisify(fs.readFile)('./schemaFromFractal.json', "utf-8");
+  const shema = req.body;
 
-  event.then(function(result){
-    setInterval(function(){
-  const record = [
-    { 
-      topic: "codgen",
-      messages: result,
-      attributes: 1
-    }
-  ];
-    producer.send(record, function(err, data){
-      console.log(data);
+  if (_.isNaN(parsedTotal)) {
+    res.status(400);
+    res.json({
+      error: 'Ensure total is a valid number.'
     });
-    console.log("Produser send")
-    //console.log(result);
-  }, 10000);
-});
- 
-consumer.on("message", function(message) {
-  console.log("Produser consumer get message");
-  var buf = new Buffer(message.value, "binary");
-  var decodedShema = JSON.parse(buf.toString());
-  console.log(decodedShema);
+    return;
+  }
+
+  const payload = [{
+    topic: 'sales-topic',
+    messages: shema
+  }];
+
+  kafkaProducer.send(payload, function (error, result) {
+    console.info('Sent payload to Kafka:', payload);
+
+    if (error) {
+      console.error('Sending payload failed:', error);
+      res.status(500).json(error);
+    } else {
+      console.log('Sending payload result:', result);
+      res.status(202).json(result);
+    }
+  });
 });
 
-consumer.on("error", function(err) {
-  console.log("error", err);
-});
-
-});
+app.listen(process.env.PRODUCER_PORT);
