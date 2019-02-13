@@ -2,7 +2,7 @@
 var kafka = require('kafka-node');
 var app = require('express')();
 var bodyParser = require('body-parser');
-const {Codegen} = require('./api/controllers/codgen');
+const {Codegen} = require('../api/controllers/codgen');
 const consumerClient = new kafka.Client();
 const produserClient = new kafka.Client();
 
