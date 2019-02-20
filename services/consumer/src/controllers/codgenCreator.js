@@ -11,8 +11,8 @@ const {
 
 
 startCodgenPlease = async (shema) => {
-    const codgenStandartConfigs = await readJSON("./api/codgen_config.json");
-    const platformsConfigs = await readJSON("./api/platforms_config.json");
+    const codgenStandartConfigs = await readJSON("./codgen_config.json");
+    const platformsConfigs = await readJSON("./platforms_config.json");
     var currentPlatformComfig = [];
     switch (shema.Make) {
         case "web":

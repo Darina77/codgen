@@ -33,9 +33,9 @@ class Codegen {
                 manyLineCommentEnd: "*/"
             })
         }];
-        this.componentsPath = componentsPath || "api/components/arduino";
-        this.soursesFoulder = soursesFoulder || "src";
-        this.outPath = outPath || "api/out";
+        this.componentsPath = componentsPath;
+        this.soursesFoulder = soursesFoulder;
+        this.outPath = outPath;
 
         this.components = [];
         this.resultComponents = [];

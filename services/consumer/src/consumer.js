@@ -1,7 +1,8 @@
 const kafka = require('kafka-node');
+
 const {
   startCodgenPlease
-} = require('../controllers/codgenCreator');
+} = require('./controllers/codgenCreator');
 
 (async () => {
   const kafkaClientOptions = {
@@ -12,26 +13,25 @@ const {
   const kafkaClient = new kafka.Client(process.env.KAFKA_ZOOKEEPER_CONNECT, 'consumer-client', kafkaClientOptions);
 
   const topics = [{
-    topic: 'sales-topic'
+    topic: "codgen"
   }];
 
   const options = {
     autoCommit: true,
-    fetchMaxWaitMs: 1000,
+    fetchMaxWaitMs: 10,
     fetchMaxBytes: 1024 * 1024,
-    encoding: 'buffer'
+    encoding: "buffer"
   };
 
   const kafkaConsumer = new kafka.HighLevelConsumer(kafkaClient, topics, options);
 
-  kafkaConsumer.on('message', async function (message) {
+  kafkaConsumer.on('message', function (message) {
     console.log('Message received:', message);
-    const messageBuffer = new Buffer(message.value, 'binary');
-
-    var decodedShema = JSON.parse(messageBuffer.toString());
+    var buf = new Buffer.from(message.value, "buffer");
+    var decodedShema = JSON.parse(buf.toString());
     console.log('Decoded Shema:', decodedShema);
-
-    startCodgenPlease(shema);
+  
+    startCodgenPlease(decodedShema);
     console.log('Start codgen');
   });
 

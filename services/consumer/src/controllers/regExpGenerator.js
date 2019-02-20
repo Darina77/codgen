@@ -104,7 +104,7 @@ class RegExpGenerator {
             }
 
         }
-        console.log("Genereted exp - " + resEx);
+        //console.log("Genereted exp - " + resEx);
         return resEx;
     }
 

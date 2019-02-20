@@ -26,4 +26,4 @@ RUN apk add --no-cache --virtual .gyp \
     && apk del .gyp
 
 # Copy everything in the host folder into the working folder of the container.
-COPY ./api /src/
+COPY ./src /src/

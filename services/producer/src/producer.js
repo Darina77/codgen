@@ -4,8 +4,9 @@ const express = require('express');
 const Router = require('express-promise-router');
 const kafka = require('kafka-node');
 
+
 const kafkaClientOptions = {
-  sessionTimeout: 100,
+  sessionTimeout: 1000,
   spinDelay: 100,
   retries: 2
 };
@@ -27,18 +28,12 @@ router.use(bodyParser.urlencoded({
 router.post('/codgen', (req, res) => {
 
   const shema = req.body;
-
-  if (_.isNaN(parsedTotal)) {
-    res.status(400);
-    res.json({
-      error: 'Ensure total is a valid number.'
-    });
-    return;
-  }
+  const messageBuffer = JSON.stringify(shema);
 
   const payload = [{
-    topic: 'sales-topic',
-    messages: shema
+    topic: "codgen",
+    messages: messageBuffer,
+    attributes: 1
   }];
 
   kafkaProducer.send(payload, function (error, result) {
@@ -54,4 +49,6 @@ router.post('/codgen', (req, res) => {
   });
 });
 
-app.listen(process.env.PRODUCER_PORT);
+app.listen(process.env.PRODUCER_PORT, new function(){
+  console.log("Produser start on port " + process.env.PRODUCER_PORT);
+});

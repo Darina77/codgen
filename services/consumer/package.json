@@ -1,0 +1,16 @@
+{
+  "name": "codgen-consumer",
+  "version": "1.0.0",
+  "description": "A kafka codgen consumer.",
+  "private": true,
+  "scripts": {
+    "start": "node consumer.js"
+  },
+  
+  "dependencies": {
+    "avsc": "5.3.1",
+    "kafka-node": "2.6.1",
+    "moment": "2.22.2",
+    "uuid": "3.3.2"
+  }
+}

@@ -2,39 +2,39 @@ version: "3"
 services:
   zookeeper:
     image: wurstmeister/zookeeper:3.4.6
-    container_name: codgen_zookeeper
+    container_name: codgen-zookeeper
     ports:
-      - ${ZOOKEEPER_PORT}:${ZOOKEEPER_PORT}
+      - 2181:2181
   kafka:
     image: wurstmeister/kafka:2.11-1.1.0
-    container_name: kafka-nodejs-example-kafka
+    container_name: codgen-kafka
     depends_on:
       - zookeeper
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_CREATE_TOPICS: sales-topic:1:1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_PORT}
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     ports:
-      - ${KAFKA_PORT}:${KAFKA_PORT}
+      - 9092:9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   producer:
     build: ./services/producer
-    container_name: codgen_producer
-    command: sh -c "dockerize -wait tcp://zookeeper:${ZOOKEEPER_PORT} -wait tcp://kafka:${ZOOKEEPER_PORT} npm start"
+    container_name: codgen-producer
+    command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 npm start"
     depends_on:
       - zookeeper
       - kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_PORT}
+      PRODUCER_PORT: 8080
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     ports:
       - ${PRODUCER_PORT}:${PRODUCER_PORT}
   consumer:
     build: ./services/consumer
-    container_name: codgen_consumer
-    command: sh -c "dockerize -wait tcp://zookeeper:${ZOOKEEPER_PORT} -wait tcp://kafka:${ZOOKEEPER_PORT} npm start"
+    container_name: codgen-consumer
+    command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 -wait tcp://producer:8080  npm start"
     depends_on:
       - zookeeper
       - kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_PORT}
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
