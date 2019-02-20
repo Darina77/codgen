@@ -4,6 +4,10 @@ const {
 } = require("util");
 
 const writeFile = async (outFile, data) => {
+  const foulderPath = outFile.substring(0, outFile.lastIndexOf("/"));
+  if (!fs.existsSync(foulderPath)){
+    fs.mkdirSync(foulderPath);
+  }
   await promisify(fs.writeFile)(outFile, data, {
     encoding: "utf8"
   });

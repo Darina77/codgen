@@ -1,5 +1,5 @@
 //---result component---
-//index
+//index.js
 //---result component end---
 
 //--funct section----

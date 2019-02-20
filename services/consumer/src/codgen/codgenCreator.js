@@ -1,10 +1,10 @@
 const {
     Codegen
-} = require('../controllers/codgen');
+} = require('../codgen/codgen');
 
 const {
     RegExpGenerator
-} = require("../controllers/regExpGenerator");
+} = require("../codgen/regExpGenerator");
 const {
     readJSON
 } = require("../helpers/utils");

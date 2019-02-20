@@ -2,7 +2,7 @@ const kafka = require('kafka-node');
 
 const {
   startCodgenPlease
-} = require('./controllers/codgenCreator');
+} = require('./codgen/codgenCreator');
 
 (async () => {
   const kafkaClientOptions = {

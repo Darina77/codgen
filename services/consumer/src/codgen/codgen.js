@@ -5,11 +5,11 @@ const {
 
 const {
     RegExpGenerator
-} = require("../controllers/regExpGenerator");
+} = require("../codgen/regExpGenerator");
 
 const {
     OneComponent
-} = require("../controllers/oneComponent");
+} = require("../codgen/oneComponent");
 
 class Codegen {
     constructor({
@@ -98,13 +98,14 @@ class Codegen {
             //Для каждого результирующего компонента    
             for (var oneResultComponent of this.resultComponents) {
                 //Ищем его исхоный код
-                var mainCode = await readComponentFile(this.componentsPath + '/' + oneResultComponent + '/' + this.soursesFoulder + '/' + oneResultComponent + specials.extension);
+                var mainCode = await readComponentFile(this.componentsPath + '/' + oneResultComponent.substring(0, oneResultComponent.lastIndexOf(".")) + '/' + this.soursesFoulder + '/' + oneResultComponent);
                 //Дополняем исходный код код компонентов которые должны дописыватся в это файл
                 const resultCode = this.writeComponentsTo(oneResultComponent, mainCode, specials.regExpGenerator);
                 //Записываем полученый код конечного компонента в файл
-                const resultCodeWay = `${this.outPath}/${oneResultComponent}${specials.extension}`;
+                const resultCodeWay = `${this.outPath}/${oneResultComponent}`;
                 await writeFile(resultCodeWay, resultCode);
                 console.log("Codegeneration completed! See your result  - " + resultCodeWay);
+                console.log(`Result code: ${resultCode}`);
             }
         }
     }
