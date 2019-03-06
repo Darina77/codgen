@@ -1,9 +1,6 @@
 const kafka = require('kafka-node');
-
-const {
-  startPlease
-} = require('./codgen/creator');
-
+const { exec } = require('child_process');
+const fs = require("fs");
 (async () => {
   const kafkaClientOptions = {
     sessionTimeout: 100,
@@ -13,7 +10,7 @@ const {
   const kafkaClient = new kafka.Client(process.env.KAFKA_ZOOKEEPER_CONNECT, 'consumer-client', kafkaClientOptions);
 
   const topics = [{
-    topic: "codgen"
+    topic: "build"
   }];
 
   const options = {
@@ -30,10 +27,17 @@ const {
     var buf = new Buffer.from(message.value, "buffer");
     var decodedShema = JSON.parse(buf.toString());
     console.log('Decoded Shema:', decodedShema);
-  
-    startPlease(decodedShema);
-    console.log('Start codgen');
+
+  exec(`pio init -d ${decodedShema.path} --board ${decodedShema.platform} && pio run -d ${decodedShema.path}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err);
+        console.log(stderr);
+        return;
+      }
+      console.log(stdout);
+    });
   });
+
 
   kafkaClient.on('error', (error) => console.error('Kafka client error:', error));
   kafkaConsumer.on('error', (error) => console.error('Kafka consumer error:', error));

@@ -1,5 +1,4 @@
 const fs = require("fs");
-var mkdirp = require('mkdirp');
 const {
   promisify
 } = require("util");
@@ -7,7 +6,7 @@ const {
 const writeFile = async (outFile, data) => {
   const foulderPath = outFile.substring(0, outFile.lastIndexOf("/"));
   if (!fs.existsSync(foulderPath)){
-    mkdirp(foulderPath);
+    fs.mkdirSync(foulderPath);
   }
   await promisify(fs.writeFile)(outFile, data, {
     encoding: "utf8"

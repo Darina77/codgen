@@ -38,3 +38,19 @@ services:
       - kafka
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - out:/src/out
+  builder:
+    build: ./services/builder
+    container_name: codgen-builder
+    command: npm start
+    depends_on:
+      - zookeeper
+      - kafka
+      - consumer
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - out:/src/out
+volumes:
+  out:

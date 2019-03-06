@@ -1,18 +1,16 @@
 {
-  "name": "codgen-consumer",
+  "name": "codgen-builder",
   "version": "1.0.0",
-  "description": "A kafka codgen consumer.",
+  "description": "A kafka codgen buider.",
   "private": true,
   "scripts": {
-    "start": "node consumer.js"
+    "start": "node builder.js"
   },
+  
   "dependencies": {
     "avsc": "5.3.1",
     "kafka-node": "2.6.1",
     "moment": "2.22.2",
     "uuid": "3.3.2"
-  },
-  "devDependencies": {
-    "mkdirp": "^0.5.1"
   }
 }

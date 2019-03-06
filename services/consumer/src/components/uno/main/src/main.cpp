@@ -15,21 +15,6 @@
 typedef void (*MyFuncPtrType)(int*, char*);
 MyFuncPtrType my_func_ptr;
 
-//---------------
-struct elementDescription
-{
-	unsigned int elementId;								//ID квадрата
-	unsigned int elementType; 							//тип элемента
-	unsigned int characteristicsNum;					//количество характеристик
-	unsigned int outputConnectionsNum;					//количество исходящих соединений
-	
-    //таблица характеристик
-	(struct singleCharacteristic)* characteristicsTable;//указатель на массив структур характеристик, "таблица" 
-	
-	//таблица исходящих соединений
-	(struct outputConnection)* connectionsTable;		//указатель на массив структур исходящих соединений, "таблица"
-};
-
 struct singleCharacteristic
 {                  
 	unsigned int characteristicId;	//ID характеристики
@@ -52,6 +37,21 @@ struct packetBetweenElements
 	unsigned int msgDataType;			//Тип данных
 	void * msgPayload;					//Указатель на данные
 };
+
+struct elementDescription
+{
+	unsigned int elementId;								//ID квадрата
+	unsigned int elementType; 							//тип элемента
+	unsigned int characteristicsNum;					//количество характеристик
+	unsigned int outputConnectionsNum;					//количество исходящих соединений
+	
+    //таблица характеристик
+	singleCharacteristic* characteristicsTable;//указатель на массив структур характеристик, "таблица" 
+	
+	//таблица исходящих соединений
+	outputConnection* connectionsTable;		//указатель на массив структур исходящих соединений, "таблица"
+};
+
 
 //----------------funct section-------------
 //----------------funct section end---------

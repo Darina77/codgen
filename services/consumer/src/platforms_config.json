@@ -25,5 +25,16 @@
                     "manyLineCommentEnd": "*/"
                 }
             }
+        ],
+        "uno" : 
+        [
+            {
+                "extension": ".cpp",
+                "regExpGenerator": {
+                    "oneLineComment": "//",
+                    "manyLineCommentStart": "/*",
+                    "manyLineCommentEnd": "*/"
+                }
+            }
         ]
 }

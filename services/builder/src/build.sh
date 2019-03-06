@@ -1,0 +1,1 @@
+cd $1 && platformio init --board $2 && platformio run

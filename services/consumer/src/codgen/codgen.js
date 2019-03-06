@@ -35,7 +35,7 @@ class Codegen {
         }];
         this.componentsPath = componentsPath;
         this.soursesFoulder = soursesFoulder;
-        this.outPath = outPath;
+        this.outPath = outPath + "/src";
 
         this.components = [];
         this.resultComponents = [];
@@ -105,7 +105,6 @@ class Codegen {
                 const resultCodeWay = `${this.outPath}/${oneResultComponent}`;
                 await writeFile(resultCodeWay, resultCode);
                 console.log("Codegeneration completed! See your result  - " + resultCodeWay);
-                console.log(`Result code: ${resultCode}`);
             }
         }
     }

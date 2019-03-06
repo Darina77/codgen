@@ -1,9 +1,0 @@
-{
-    "id": "",
-    "name": "button",
-    "params": {
-        "Pin" : 3,
-        "ActiveState" : 0,
-        "ContactDebounceTime" : 100
-    }
-}
